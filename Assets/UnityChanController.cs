@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;  //（追加）
+using UnityEngine.UI;
 
 public class UnityChanController : MonoBehaviour
 {
@@ -13,25 +13,25 @@ public class UnityChanController : MonoBehaviour
     private float velocityZ = 16f;
     //横方向の速度
     private float velocityX = 10f;
-    //上方向の速度（追加）
+    //上方向の速度
     private float velocityY = 10f;
     //左右の移動できる範囲
     private float movableRange = 3.4f;
-    //動きを減速させる係数（追加）
+    //動きを減速させる係数
     private float coefficient = 0.99f;
-    //ゲーム終了の判定（追加）
+    //ゲーム終了の判定
     private bool isEnd = false;
-    //ゲーム終了時に表示するテキスト（追加）
+    //ゲーム終了時に表示するテキスト
     private GameObject stateText;
-    //スコアを表示するテキスト（追加）
+    //スコアを表示するテキスト
     private GameObject scoreText;
-    //得点（追加）
+    //得点
     private int score = 0;
-    //左ボタン押下の判定（追加）
+    //左ボタン押下の判定
     private bool isLButtonDown = false;
-    //右ボタン押下の判定（追加）
+    //右ボタン押下の判定
     private bool isRButtonDown = false;
-    //ジャンプボタン押下の判定（追加）
+    //ジャンプボタン押下の判定
     private bool isJButtonDown = false;
 
 
@@ -50,13 +50,13 @@ public class UnityChanController : MonoBehaviour
         //走るアニメーションを開始
         this.myAnimator.SetFloat("Speed", 1);
 
-        //Rigidbodyコンポーネントを取得（追加）
+        //Rigidbodyコンポーネントを取得
         this.myRigidbody = GetComponent<Rigidbody>();
 
-        //シーン中のstateTextオブジェクトを取得（追加）
+        //シーン中のstateTextオブジェクトを取得
         this.stateText = GameObject.Find("GameResultText");
 
-        //シーン中のscoreTextオブジェクトを取得（追加）
+        //シーン中のscoreTextオブジェクトを取得
         this.scoreText = GameObject.Find("ScoreText");
 
 
@@ -64,17 +64,11 @@ public class UnityChanController : MonoBehaviour
         this.unitychan = GameObject.Find("unitychan");
         //Unityちゃんとカメラの位置（z座標）の差を求める
         this.difference = unitychan.transform.position.z - this.transform.position.z;
-
-            Debug.Log("difference="+difference);
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("unitychan=" + unitychan.transform.position.z + "this"+ this.transform.position.z);
-
-
         //ゲーム終了ならUnityちゃんの動きを減衰する
         if (this.isEnd)
         {
@@ -89,8 +83,7 @@ public class UnityChanController : MonoBehaviour
         //上方向の入力による速度
         float inputVelocityY = 0;
 
-
-        //Unityちゃんを矢印キーまたはボタンに応じて左右に移動させる（追加）
+        //Unityちゃんを矢印キーまたはボタンに応じて左右に移動させる
         if ((Input.GetKey(KeyCode.LeftArrow) || this.isLButtonDown) && -this.movableRange < this.transform.position.x)
         {
             //左方向への速度を代入
@@ -127,77 +120,75 @@ public class UnityChanController : MonoBehaviour
     }
 
 
-    //トリガーモードで他のオブジェクトと接触した場合の処理（追加）
+    //トリガーモードで他のオブジェクトと接触した場合の処理
     void OnTriggerEnter(Collider other)
     {
 
-        //障害物に衝突した場合（追加）
+        //障害物に衝突した場合
         if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
         {
-//            this.isEnd = true;
+            this.isEnd = true;
 
-            //stateTextにGAME OVERを表示（追加）
+            //stateTextにGAME OVERを表示
             this.stateText.GetComponent<Text>().text = "GAME OVER";
-
         }
 
-        //ゴール地点に到達した場合（追加）
+        //ゴール地点に到達した場合
         if (other.gameObject.tag == "GoalTag")
         {
             this.isEnd = true;
 
-            //stateTextにGAME CLEARを表示（追加）
+            //stateTextにGAME CLEARを表示
             this.stateText.GetComponent<Text>().text = "CLEAR!!";
         }
 
-        //コインに衝突した場合（追加）
+        //コインに衝突した場合
         if (other.gameObject.tag == "CoinTag")
         {
-            // スコアを加算(追加)
+            // スコアを加算
             this.score += 10;
 
-            //ScoreText獲得した点数を表示(追加)
+            //ScoreText獲得した点数を表示
             this.scoreText.GetComponent<Text>().text = "Score " + this.score + "pt";
 
 
-
-            //パーティクルを再生（追加）
+            //パーティクルを再生
             GetComponent<ParticleSystem>().Play();
 
-            //接触したコインのオブジェクトを破棄（追加）
+            //接触したコインのオブジェクトを破棄
             Destroy(other.gameObject);
         }
     }
 
-    //ジャンプボタンを押した場合の処理（追加）
+    //ジャンプボタンを押した場合の処理
     public void GetMyJumpButtonDown()
     {
         this.isJButtonDown = true;
     }
 
-    //ジャンプボタンを離した場合の処理（追加）
+    //ジャンプボタンを離した場合の処理
     public void GetMyJumpButtonUp()
     {
         this.isJButtonDown = false;
     }
 
-    //左ボタンを押し続けた場合の処理（追加）
+    //左ボタンを押し続けた場合の処理
     public void GetMyLeftButtonDown()
     {
         this.isLButtonDown = true;
     }
-    //左ボタンを離した場合の処理（追加）
+    //左ボタンを離した場合の処理
     public void GetMyLeftButtonUp()
     {
         this.isLButtonDown = false;
     }
 
-    //右ボタンを押し続けた場合の処理（追加）
+    //右ボタンを押し続けた場合の処理
     public void GetMyRightButtonDown()
     {
         this.isRButtonDown = true;
     }
-    //右ボタンを離した場合の処理（追加）
+    //右ボタンを離した場合の処理
     public void GetMyRightButtonUp()
     {
         this.isRButtonDown = false;
